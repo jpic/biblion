@@ -1,8 +1,9 @@
+from markdown import markdown
+
 from datetime import datetime
 
 from django import forms
 
-from biblion.creole_parser import parse, BiblionHtmlEmitter
 from biblion.models import Post, Revision
 from biblion.utils import can_tweet
 
@@ -71,9 +72,9 @@ class AdminPostForm(forms.ModelForm):
             if Post.objects.filter(pk=post.pk, published=None).count():
                 if self.cleaned_data["publish"]:
                     post.published = datetime.now()
-        
-        post.teaser_html = parse(self.cleaned_data["teaser"], emitter=BiblionHtmlEmitter)
-        post.content_html = parse(self.cleaned_data["content"], emitter=BiblionHtmlEmitter)
+       
+        post.teaser_html = markdown(self.cleaned_data["teaser"], ['codehilite'])
+        post.content_html = markdown(self.cleaned_data["content"], ['codehilite'])
         post.updated = datetime.now()
         post.save()
         
